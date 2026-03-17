@@ -1,0 +1,40 @@
+
+SALES ANALYSIS INSIGHTS REPORT
+Date: 2026-03-17
+
+KEY METRICS
+-----------
+Total Sales: $6,182,639.00
+Total Profit: $1,610,697.00
+Average Margin: 26.05%
+Total Orders: 547
+Average Order Value: $11,302.81
+
+TOP 5 CUSTOMERS
+--------------
+1. Cory Evans: $28,557.00
+2. Nicholas Anderson: $27,352.00
+3. Emily Ellison: $27,352.00
+4. George Foster: $27,352.00
+5. Katherine Williams: $25,121.00
+
+TOP 5 STATES
+-----------
+1. New York: $1,130,048.00
+2. Florida: $1,091,174.00
+3. California: $1,086,436.00
+4. Texas: $1,011,475.00
+5. Illinois: $978,738.00
+
+SEASONALITY
+----------
+Best Month: Aug ($5,508.83)
+Worst Month: Jan ($4,566.02)
+
+RECOMMENDATIONS
+--------------
+1. Focus retention efforts on top customers (Cory Evans, Nicholas Anderson, etc.)
+2. Expand marketing in New York, Florida, and California (top 3 states)
+3. Plan promotions around August (peak month) and January (lowest month)
+4. Investigate 2022 peak to replicate success factors
+5. Consider Q2 (April-June) for product launches (strongest quarter)

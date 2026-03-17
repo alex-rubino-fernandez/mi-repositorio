@@ -1,0 +1,336 @@
+"""
+Sales Data Analysis - Exploratory Data Analysis (EDA)
+Objective: Understand patterns, relationships, and distributions in the data
+Questions to answer:
+1. What are the distributions of numerical variables?
+2. How do variables correlate with each other?
+3. What are the top customers, states, and products?
+4. Are there seasonal patterns in sales?
+"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+# Set visualization style (configuration)
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (12, 6)
+
+# Define paths relative to script location
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_dir = os.path.dirname(script_dir)
+data_path = os.path.join(project_dir, "data", "sales_dataset_cleaned.csv")
+charts_path = os.path.join(project_dir, "outputs", "charts")
+
+# Create output directory for charts
+os.makedirs(charts_path, exist_ok=True)
+
+
+# Load the cleaned dataset
+sales = pd.read_csv(data_path)
+print(f"\n Loaded cleaned data: {sales.shape[0]} rows, {sales.shape[1]} columns")
+
+"""
+We load the cleaned dataset created in the previous step.
+This dataset includes the original 12 columns plus the 6 new features:
+Year, Month, Month_Name, Quarter, Profit_Margin, Avg_Unit_Price.
+"""
+
+# Numerical variables distribution
+numeric_cols = ['Amount', 'Profit', 'Quantity', 'Profit_Margin', 'Avg_Unit_Price']
+
+for col in numeric_cols:
+    if col in sales.columns:
+        print(f"\n {col} statistics:")
+        print(sales[col].describe())
+        
+        # Create histogram
+        plt.figure()
+        sns.histplot(sales[col], bins=30, kde=True)
+        plt.title(f'Distribution of {col}')
+        plt.xlabel(col)
+        plt.ylabel('Frequency')
+        
+        # Save chart
+        chart_file = os.path.join(charts_path, f'dist_{col}.png')
+        plt.savefig(chart_file)
+        plt.close()
+        print(f" Chart saved: {chart_file}")
+
+"""
+For each numerical variable, we generate:
+- Descriptive statistics (mean, std, min, quartiles, max)
+- Histogram with KDE curve to visualize the distribution shape
+
+This helps us understand:
+- Amount: Sales values distribution
+- Profit: Profit distribution and spread
+- Quantity: How many items per transaction
+- Profit_Margin: Range of profitability
+- Avg_Unit_Price: Price points across products
+"""
+
+# Correlation analysis
+
+# Select only numeric columns for correlation
+numeric_df = sales.select_dtypes(include=['int64', 'float64'])
+
+# Calculate correlation matrix
+corr_matrix = numeric_df.corr()
+
+print("\n Correlation matrix:")
+print(corr_matrix)
+
+# Create heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, 
+            square=True, linewidths=1, cbar_kws={"shrink": 0.8})
+plt.title('Correlation Matrix of Numerical Variables')
+plt.tight_layout()
+
+# Save chart
+chart_file = os.path.join(charts_path, 'correlation_heatmap.png')
+plt.savefig(chart_file)
+plt.close()
+print(f" Chart saved: {chart_file}")
+
+"""
+The correlation matrix shows relationships between numerical variables:
+- Values close to 1: strong positive correlation
+- Values close to -1: strong negative correlation
+- Values close to 0: no linear relationship
+
+We pay special attention to correlations with Amount and Profit,
+as these are our target variables for understanding sales performance.
+"""
+
+"""
+CORRELATION MATRIX ANALYSIS:
+
+Key Findings:
+
+1. Strongest correlations:
+   - Amount and Quantity (0.68): Moderate positive correlation. Higher sales amounts tend to involve larger quantities, but the relationship isn't extremely strong.
+   - Profit and Profit_Margin (0.65): Strong positive correlation. Higher profits naturally correspond to higher profit margins.
+   - Month and Quarter (0.97): Perfect correlation (expected, as Quarter is derived from Month).
+
+2. Amount relationships:
+   - Amount-Profit: 0.68 (moderate)
+   - Amount-Avg_Unit_Price: 0.34 (weak positive)
+   - Amount-Quantity: 0.045 (very weak)
+
+3. Profit relationships:
+   - Profit-Profit_Margin: 0.65 (strong)
+   - Profit-Amount: 0.68 (moderate)
+   - Profit-Quantity: 0.066 (very weak)
+
+4. Weak or no correlations:
+   - Year shows almost no correlation with any sales metric (values near 0)
+   - Month and Quarter have negligible correlation with Amount and Profit
+   - Quantity has very weak correlation with Amount (0.045), suggesting that higher quantities don't necessarily mean higher sales values (likely due to different price points)
+
+5. Negative correlations:
+   - Avg_Unit_Price and Quantity (-0.56): Moderate negative correlation. Higher unit prices are associated with lower quantities sold (price sensitivity).
+   - Month and Year (-0.21): Very weak negative
+   - Quarter and Year (-0.22): Very weak negative
+
+Insights for business:
+- Sales amount is driven by both quantity and unit price, but not strongly by either alone
+- Higher-priced items sell in smaller quantities (typical retail behavior)
+- Profitability (margin) is strongly tied to absolute profit, not to sales amount
+- No significant seasonal correlation with sales metrics (Month/Quarter vs Amount/Profit)
+"""
+
+# Categorical analysis
+# Top 10 customers by amount
+if 'CustomerName' in sales.columns:
+    top_customers = sales.groupby('CustomerName')['Amount'].sum().sort_values(ascending=False).head(10)
+    print("\n Top 10 customers by sales:")
+    print(top_customers)
+    
+    # Bar plot
+    plt.figure(figsize=(12, 6))
+    top_customers.plot(kind='bar', color='skyblue')
+    plt.title('Top 10 Customers by Sales')
+    plt.xlabel('Customer')
+    plt.ylabel('Total Sales ($)')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    
+    # Save chart
+    chart_file = os.path.join(charts_path, 'top_customers.png')
+    plt.savefig(chart_file)
+    plt.close()
+    print(f" Chart saved: {chart_file}")
+
+# Sales by state
+if 'State' in sales.columns:
+    state_sales = sales.groupby('State')['Amount'].sum().sort_values(ascending=False)
+    print("\n Sales by state (top 10):")
+    print(state_sales.head(10))
+    
+    # Bar plot top 10 states
+    plt.figure(figsize=(12, 6))
+    state_sales.head(10).plot(kind='bar', color='lightgreen')
+    plt.title('Top 10 States by Sales')
+    plt.xlabel('State')
+    plt.ylabel('Total Sales ($)')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    
+    # Save chart
+    chart_file = os.path.join(charts_path, 'top_states.png')
+    plt.savefig(chart_file)
+    plt.close()
+    print(f" Chart saved: {chart_file}")
+
+# Sales by city (top 10)
+if 'City' in sales.columns:
+    city_sales = sales.groupby('City')['Amount'].sum().sort_values(ascending=False).head(10)
+    print("\n Top 10 cities by sales:")
+    print(city_sales)
+
+"""
+Categorical analysis helps identify:
+- Key customers driving revenue (for retention strategies)
+- Geographic concentration of sales (for expansion decisions)
+- Market opportunities in underrepresented areas
+
+The bar charts provide visual representation of these rankings.
+"""
+
+"""
+Top Customers:
+- Cory Evans leads with $28,557 in sales
+- Four customers tied at $27,352 (Nicholas Anderson, Emily Ellison, George Foster)
+- Sales are relatively distributed; no single dominant customer
+
+Top States:
+1. New York: $1.13M
+2. Florida: $1.09M  
+3. California: $1.08M
+4. Texas: $1.01M
+5. Illinois: $0.98M
+
+Top Cities:
+1. Orlando: $452K
+2. San Francisco: $440K
+3. Buffalo: $418K
+4. Rochester: $407K
+5. Dallas: $390K
+
+Observations:
+- Sales are well distributed across major states (all between $0.98M-$1.13M)
+- Florida appears twice in top cities (Orlando #1, Miami #7)
+- California appears twice (San Francisco #2, San Diego #6)
+- New York appears twice (Buffalo #3, Rochester #4)
+- Texas appears twice (Dallas #5, Austin #10)
+
+Insights:
+- No extreme geographic concentration; business is balanced across regions
+- Multiple cities per top state suggest broad coverage within states
+- Orlando is the single highest-performing city
+"""
+
+# Temporal Analysis
+if 'Year' in sales.columns and 'Month' in sales.columns:
+    # Sales by year
+    yearly_sales = sales.groupby('Year')['Amount'].sum()
+    print("\n Sales by year:")
+    print(yearly_sales)
+    
+    # Bar plot by year
+    plt.figure(figsize=(10, 5))
+    yearly_sales.plot(kind='bar', color='coral')
+    plt.title('Total Sales by Year')
+    plt.xlabel('Year')
+    plt.ylabel('Total Sales ($)')
+    plt.xticks(rotation=0)
+    plt.tight_layout()
+    
+    chart_file = os.path.join(charts_path, 'sales_by_year.png')
+    plt.savefig(chart_file)
+    plt.close()
+    print(f" Chart saved: {chart_file}")
+    
+    # Sales by month (across all years)
+    monthly_sales = sales.groupby('Month')['Amount'].mean()
+    print("\n Average sales by month:")
+    print(monthly_sales)
+    
+    # Line plot: monthly trend
+    plt.figure(figsize=(12, 6))
+    monthly_sales.plot(kind='line', marker='o', color='red', linewidth=2)
+    plt.title('Average Sales by Month')
+    plt.xlabel('Month')
+    plt.ylabel('Average Sales ($)')
+    plt.xticks(range(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    chart_file = os.path.join(charts_path, 'monthly_trend.png')
+    plt.savefig(chart_file)
+    plt.close()
+    print(f" Chart saved: {chart_file}")
+    
+    # Sales by quarter
+    if 'Quarter' in sales.columns:
+        quarterly_sales = sales.groupby('Quarter')['Amount'].mean()
+        print("\n Average sales by quarter:")
+        print(quarterly_sales)
+        
+        # Bar plot by quarter
+        plt.figure(figsize=(8, 5))
+        quarterly_sales.plot(kind='bar', color='lightblue')
+        plt.title('Average Sales by Quarter')
+        plt.xlabel('Quarter')
+        plt.ylabel('Average Sales ($)')
+        plt.xticks(rotation=0)
+        plt.tight_layout()
+        
+        chart_file = os.path.join(charts_path, 'quarterly_trend.png')
+        plt.savefig(chart_file)
+        plt.close()
+        print(f" Chart saved: {chart_file}")
+
+"""
+Temporal analysis reveals patterns over time:
+- Year-over-year growth or decline
+- Seasonal patterns (which months perform best)
+- Quarterly trends for business planning
+
+Understanding seasonality helps with inventory planning,
+marketing campaigns, and resource allocation.
+"""
+
+"""
+TEMPORAL ANALYSIS RESULTS:
+
+Sales by Year:
+- 2020: $859k (baseline)
+- 2021: $1.18M (+37% growth)
+- 2022: $1.46M (+24% growth) PEAK YEAR
+- 2023: $1.23M (-16% decline)
+- 2024: $1.20M (-2% decline)
+- 2025: $250k (partial year? data incomplete)
+
+Monthly Patterns (Average Sales):
+- Peak months: August ($5,509), May ($5,439), March-April ($5,404-5,408)
+- Lowest months: January ($4,566), February ($4,846)
+- Range: $4,566 (Jan) to $5,509 (Aug) = ~$1,000 difference
+
+Quarterly Patterns:
+- Q2 (Apr-Jun): $5,381 (strongest)
+- Q3 (Jul-Sep): $5,292 (strong)
+- Q4 (Oct-Dec): $5,087 (moderate)
+- Q1 (Jan-Mar): $4,947 (weakest)
+
+Key Insights:
+1. Business peaked in 2022, declined slightly in 2023-2024
+2. Summer months (May-August) consistently outperform winter months
+3. Q2 is the strongest quarter overall
+4. Sales are relatively stable throughout the year (no extreme seasonality)
+5. 2025 data appears incomplete (only $250k vs normal $1.2M run rate)
+"""

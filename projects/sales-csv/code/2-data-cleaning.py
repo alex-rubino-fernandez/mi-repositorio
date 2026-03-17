@@ -191,3 +191,6 @@ Total columns expanded from 12 to 18. All calculations completed successfully.
 Note: Same Order ID appears across different months (e.g., B-26776 in June, July, Dec). 
 This suggests possible data duplication to investigate before aggregation.
 """
+
+# Save cleaned dataset
+sales.to_csv("C:/Users/alexr/OneDrive/Escritorio/repositorio-git/projects/sales-csv/data/sales_dataset_cleaned.csv", index=False)
