@@ -1,6 +1,6 @@
-Author: Alex Rubiño Fernández
-Date: March 2026
-Repository: mi-repositorio
+- Author: Alex Rubiño Fernández
+- Date: March 2026
+- Repository: [mi-repositorio](https://github.com/alex-rubino-fernandez/mi-repositorio)
 
 
 # 📊 Sales Data Analysis Project
@@ -9,19 +9,22 @@ Complete analysis of a sales dataset using Python.
 This project covers the entire cycle: exploration, cleaning, analysis and visualization.
 
 ## 📁 Project Structure
+
+```
 sales-csv/
 ├── data/
-│ ├── sales-dataset.csv # Original data (1194 rows, 12 columns)
-│ └── sales_dataset_cleaned.csv # Cleaned data with new features
+│   ├── sales-dataset.csv          # Original data (1194 rows, 12 columns)
+│   └── sales_dataset_cleaned.csv   # Cleaned data with new features
 ├── code/
-│ ├── 1-initial-exploration.py # Initial exploration
-│ ├── 2-data-cleaning.py # Data cleaning and feature engineering
-│ ├── 3-exploratory-analysis.py # Exploratory Data Analysis (EDA)
-│ └── 4-insights-report.py # Final report with recommendations
+│   ├── 1-initial-exploration.py    # Initial exploration
+│   ├── 2-data-cleaning.py          # Data cleaning and feature engineering
+│   ├── 3-exploratory-analysis.py   # Exploratory Data Analysis (EDA)
+│   └── 4-insights-report.py        # Final report with recommendations
 ├── outputs/
-│ ├── charts/ # Generated charts
-│ └── reports/ # Text reports
+│   ├── charts/                      # Generated charts
+│   └── reports/                      # Text reports
 └── README.md
+```
 
 
 ## 🎯 Objective
@@ -43,7 +46,7 @@ Get hands-on experience with real data analysis by applying:
 
 ### 1. Initial Exploration
 - Checked dimensions and data types
-- Verified null values (✅ no nulls found)
+- Verified null values (✅ No nulls found)
 - Identified numeric (3) and categorical (9) columns
 
 ### 2. Data Cleaning & Feature Engineering
