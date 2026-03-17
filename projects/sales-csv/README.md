@@ -8,6 +8,8 @@
 Complete analysis of a sales dataset using Python.
 This project covers the entire cycle: exploration, cleaning, analysis and visualization.
 
+Dataset source: [Sales Dataset (2020-2025) on Kaggle](https://www.kaggle.com/datasets/shantanugarg274/sales-dataset) by Shantanu Garg.
+
 ## 📁 Project Structure
 
 ```
