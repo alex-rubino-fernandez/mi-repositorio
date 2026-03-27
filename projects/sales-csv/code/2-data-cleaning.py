@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 # Load the data
-sales = pd.read_csv("C:/Users/alexr/OneDrive/Escritorio/repositorio-git/projects/sales-csv/data/sales-dataset.csv")
+sales = pd.read_csv("C:/Users/alexr/OneDrive/Escritorio/GitHub/repositorio-git/projects/sales-csv/data/sales-dataset.csv")
 
 # Checking for duplicates
 duplicate_count = sales.duplicated().sum()
@@ -193,4 +193,4 @@ This suggests possible data duplication to investigate before aggregation.
 """
 
 # Save cleaned dataset
-sales.to_csv("C:/Users/alexr/OneDrive/Escritorio/repositorio-git/projects/sales-csv/data/sales_dataset_cleaned.csv", index=False)
+sales.to_csv("C:/Users/alexr/OneDrive/Escritorio/GitHub/repositorio-git/projects/sales-csv/data/sales-dataset.csv", index=False)

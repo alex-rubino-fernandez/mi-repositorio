@@ -12,7 +12,7 @@ Questions to answer:
 import pandas as pd
 
 # Load the data
-sales = pd.read_csv("C:/Users/alexr/OneDrive/Escritorio/repositorio-git/projects/sales-csv/data/sales-dataset.csv")
+sales = pd.read_csv("C:/Users/alexr/OneDrive/Escritorio/GitHub/repositorio-git/projects/sales-csv/data/sales-dataset.csv")
 print(sales.head()) # data.head
 
 # Dataset dimensions
